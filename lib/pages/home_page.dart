@@ -4,8 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:fintina/services/file_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 import '../constants.dart';
 import '../services/rest_api_service.dart';
@@ -20,6 +18,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String? filename;
+
+  bool isLoading = false;
 
   final textController = TextEditingController();
 
@@ -49,7 +49,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _findKeywords() async {
+    setState(() {
+      isLoading = true;
+    });
     final res = await apiService.getKeywords(textController.text, algo: algo);
+    setState(() {
+      isLoading = false;
+    });
     res.fold(
       (l) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -76,15 +82,6 @@ class _HomePageState extends State<HomePage> {
       filename = null;
     });
   }
-
-  final keywords = [
-    'joie',
-    'euphorie',
-    'bonheur',
-    'satisfaction',
-    'contentement',
-    'sérénité',
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -135,6 +132,9 @@ class _HomePageState extends State<HomePage> {
                         child: Padding(
                           padding: const EdgeInsets.all(20.0),
                           child: TextField(
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                            ),
                             maxLines: 20,
                             controller: textController,
                           ),
@@ -145,14 +145,14 @@ class _HomePageState extends State<HomePage> {
                           InkWell(
                             onTap: _uploadFile,
                             child: Container(
-                              width: 70,
-                              height: 40,
+                              width: 90,
+                              height: 50,
                               decoration: const BoxDecoration(
                                 color: Color.fromARGB(151, 160, 142, 252),
                               ),
                               child: const Center(
                                 child: Text(
-                                  'Upload',
+                                  'Téléverser',
                                   style: TextStyle(
                                     color: Colors.white,
                                   ),
@@ -161,7 +161,14 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           Expanded(
-                            child: Center(child: Text(filename ?? 'filename')),
+                            child: Center(
+                              child: Text(
+                                filename ?? '--- nom de fichier ---',
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -175,17 +182,30 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Row(
                       children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: SizedBox(
-                              height: 50,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  primary: const Color(0xff87bef8),
+                        Visibility(
+                          visible: isLoading,
+                          child: const Expanded(
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Visibility(
+                          visible: !isLoading,
+                          child: Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SizedBox(
+                                height: 50,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: const Color(0xff87bef8),
+                                  ),
+                                  onPressed: _findKeywords,
+                                  child: const Text('Trouver'),
                                 ),
-                                onPressed: _findKeywords,
-                                child: const Text('Trouver'),
                               ),
                             ),
                           ),
@@ -242,8 +262,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                               DropdownMenuItem(
-                                enabled: false,
-                                value: 'semantique',
+                                value: 'semantic',
                                 child: Text('Sémantique'),
                               ),
                             ],
@@ -296,7 +315,7 @@ class KeywordsContainer extends StatelessWidget {
           children: keywords.map((e) {
             return Padding(
               padding: const EdgeInsets.all(5.0),
-              child: Text('$e, '),
+              child: Text(e),
             );
           }).toList(),
         ),

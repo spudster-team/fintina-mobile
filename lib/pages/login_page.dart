@@ -78,9 +78,14 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 50.0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // Spacer(),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  child: Image.asset(
+                    'assets/images/logo1.png',
+                  ),
+                ),
                 TextFormField(
                   controller: usernameController,
                   decoration: const InputDecoration(
@@ -94,7 +99,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     hintText: "Mot de passe",
                   ),
                 ),
-                const SizedBox(height: 50),
                 Visibility(
                   visible: isLoading,
                   child: const Center(
@@ -108,7 +112,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     child: const Text("Se connecter"),
                   ),
                 ),
-                // Spacer(),
               ],
             ),
           ),

@@ -29,7 +29,7 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
   }
 
   void _logout() async {
-    final prefs = await SharedPreferences.getInstance();   
+    final prefs = await SharedPreferences.getInstance();
     final service = CacheService(prefs);
     await service.logout();
     ref.read(isLoggedStateProvider.notifier).state = false;
@@ -45,24 +45,6 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
         isLogged = ref.read(isLoggedStateProvider);
       });
     });
-
-    // isLogged_.when(
-    //   data: (data) {
-    //     setState(() {
-    //       isLogged = ref.read(isLoggedStateProvider);
-    //     });
-    //   },
-    //   error: (e, s) {
-    //     setState(() {
-    //       isLogged = ref.read(isLoggedStateProvider);
-    //     });
-    //   },
-    //   loading: () {
-    //     setState(() {
-    //       isLogged = false;
-    //     });
-    //   },
-    // );
 
     return SafeArea(
       child: Drawer(
@@ -123,7 +105,25 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
               DrawerButton(
                 icon: Icons.history,
                 text: 'Historique',
-                onTap: () => _goTo(const HistoryPage()),
+                onTap: () {
+                  if (ref.read(isLoggedStateProvider)) {
+                    _goTo(const HistoryPage());
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Vous devez vous connecter pour accéder à cette page'),
+                      ),
+                    );
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return const LoginPage();
+                        },
+                      ),
+                    );
+                    _goTo(const LoginPage());
+                  }
+                },
               ),
               DrawerButton(
                 icon: Icons.sort,
