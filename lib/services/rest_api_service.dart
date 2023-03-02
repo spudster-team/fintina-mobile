@@ -11,6 +11,10 @@ class HttpRestApiService {
 
   HttpRestApiService(this.dio);
 
+  Future<String> getHistory(){
+    throw UnimplementedError();
+  }
+
   Future<Either<String, String>> login(
     String username,
     String password,
@@ -25,12 +29,13 @@ class HttpRestApiService {
       final token = res.data['token'];
       if (await prefs.setString('token', token) &&
           await prefs.setBool('isLogged', true)) {
+        await prefs.setString('username', username);
         return const Right('Connexion réussie.');
       } else {
         return const Left('Problème lors de la connexion');
       }
     } on DioError catch (e) {
-      return Left(e.response?.data ?? e.toString());
+      return Left(e.response?.data.toString() ?? e.toString());
     } catch (e) {
       return Left(e.toString());
     }
@@ -50,9 +55,10 @@ class HttpRestApiService {
           'password': password,
         },
       );
-      return Right(res.data.toString());
+      // return Right(res.data.toString());
+      return const Right('Inscription réussie');
     } on DioError catch (e) {
-      return Left(e.response?.data ?? e.toString());
+      return Left(e.response?.data.toString() ?? e.toString());
     } catch (e) {
       return Left(e.toString());
     }
@@ -63,13 +69,19 @@ class HttpRestApiService {
     String? algo,
     int? keywordsNumber,
   }) async {
+    final data = {
+      'titre': 'titre',
+      'contenu': text,
+    };
+
+    if (algo != null) {
+      data['choix'] = algo;
+    }
+    
     try {
       final res = await dio.post(
         '$baseUrl/api/user/fintino',
-        data: {
-          'titre': 'titre',
-          'contenu': text,
-        },
+        data: data,
       );
       final keywords = <String>[];
       final Map<String, dynamic> parsedResponse = json.decode(res.data);
@@ -78,7 +90,7 @@ class HttpRestApiService {
       }
       return Right(keywords);
     } on DioError catch (e) {
-      return Left(e.response?.data ?? e.toString());
+      return Left(e.response?.data.toString() ?? e.toString());
     } catch (e) {
       return Left(e.toString());
     }

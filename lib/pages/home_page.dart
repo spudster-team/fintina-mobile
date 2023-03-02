@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _findKeywords() async {
-    final res = await apiService.getKeywords(textController.text);
+    final res = await apiService.getKeywords(textController.text, algo: algo);
     res.fold(
       (l) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -59,10 +59,10 @@ class _HomePageState extends State<HomePage> {
         );
       },
       (r) {
-        showModalBottomSheet(
+        showDialog(
           context: context,
           builder: (context) {
-            return KeywordsContainer(keywords: r);
+            return Dialog(child: KeywordsContainer(keywords: r));
           },
         );
       },
@@ -229,7 +229,7 @@ class _HomePageState extends State<HomePage> {
                             value: algo,
                             items: const [
                               DropdownMenuItem(
-                                value: 'tf-idf',
+                                value: 'tfidf',
                                 child: Text('TF-IDF'),
                               ),
                               DropdownMenuItem(
@@ -242,6 +242,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                               DropdownMenuItem(
+                                enabled: false,
                                 value: 'semantique',
                                 child: Text('Sémantique'),
                               ),
@@ -295,7 +296,7 @@ class KeywordsContainer extends StatelessWidget {
           children: keywords.map((e) {
             return Padding(
               padding: const EdgeInsets.all(5.0),
-              child: Text(e),
+              child: Text('$e, '),
             );
           }).toList(),
         ),

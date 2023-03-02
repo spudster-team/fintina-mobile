@@ -19,12 +19,21 @@ dependencies:
   dio: ^5.0.1
   riverpod: ^2.3.0
   shared_preferences: ^2.0.18
+  status_alert: ^1.0.1
+  flutter_riverpod: ^2.3.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  flutter_launcher_icons: ^0.11.0
   flutter_lints: ^2.0.0
+
+flutter_icons:
+  android: true
+  image_path: "assets/images/logo2.png"
+  adaptive_icon_background: "assets/images/logo2.png"
+  # adaptive_icon_foreground: "assets/images/icon.png"
 
 flutter:
 

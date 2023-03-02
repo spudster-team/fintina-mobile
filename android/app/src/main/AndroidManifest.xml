@@ -2,7 +2,7 @@
     package="mg.aviato.fintina_mobile">
    <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="fintina_mobile"
+        android:label="Fintina"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

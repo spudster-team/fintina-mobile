@@ -8,3 +8,5 @@ final colors = {
 };
 
 const baseUrl = 'http://192.168.1.115:8000';
+
+const padding = 20.0;

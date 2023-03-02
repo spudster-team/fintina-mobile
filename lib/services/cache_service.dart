@@ -7,6 +7,8 @@ class CacheService {
 
   Future<void> logout() async {
     await prefs.setBool('isLogged', false);
+    await prefs.remove('username');
+    await prefs.remove('token');
   }
 
   bool isLogged() {
